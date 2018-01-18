@@ -30,6 +30,7 @@ class CartManager implements CartManagerContract
     public function __construct()
     {
         $this->sessionKey = config('vanilo.cart.session_key');
+        $this->cart = Cart::find($this->getCartId()) ?: new Cart();
     }
 
     /**
@@ -37,7 +38,7 @@ class CartManager implements CartManagerContract
      */
     public function getItems(): Collection
     {
-        return $this->exists() ? $this->model()->getItems() : collect();
+        return $this->cart->getItems();
     }
 
 
@@ -46,9 +47,9 @@ class CartManager implements CartManagerContract
      */
     public function addItem(Buyable $product, $qty = 1, $params = []): CartItem
     {
-        $cart = $this->findOrCreateCart();
+        $this->cart = $this->findOrCreateCart();
 
-        return $cart->addItem($product, $qty, $params);
+        return $this->cart->addItem($product, $qty, $params);
     }
 
     /**
@@ -56,9 +57,7 @@ class CartManager implements CartManagerContract
      */
     public function removeItem($item)
     {
-        if ($cart = $this->model()) {
-            $cart->removeItem($item);
-        }
+        $this->cart->removeItem($item);
     }
 
     /**
@@ -66,9 +65,7 @@ class CartManager implements CartManagerContract
      */
     public function removeProduct(Buyable $product)
     {
-        if ($cart = $this->model()) {
-            $cart->removeProduct($product);
-        }
+        $this->cart->removeProduct($product);
     }
 
     /**
@@ -76,9 +73,7 @@ class CartManager implements CartManagerContract
      */
     public function clear()
     {
-        if ($cart = $this->model()) {
-            $cart->clear();
-        }
+        $this->cart->clear();
     }
 
     /**
@@ -86,7 +81,7 @@ class CartManager implements CartManagerContract
      */
     public function itemCount()
     {
-        return $this->exists() ? $this->model()->itemCount() : 0;
+        return $this->cart->itemCount();
     }
 
     /**
@@ -94,9 +89,8 @@ class CartManager implements CartManagerContract
      */
     public function total()
     {
-        return $this->exists() ? $this->model()->total() : 0;
+        return $this->cart->total();
     }
-
 
     /**
      * @inheritDoc
@@ -119,15 +113,7 @@ class CartManager implements CartManagerContract
      */
     public function model()
     {
-        if ($this->cart) {
-            return $this->cart;
-        } elseif ($id = $this->getCartId()) {
-            $this->cart = CartProxy::find($id);
-
-            return $this->cart;
-        }
-
-        return null;
+        return $this->cart;
     }
 
     /**
@@ -153,8 +139,7 @@ class CartManager implements CartManagerContract
     {
         $this->clear();
 
-        $this->model()->delete();
-        $this->cart = null;
+        $this->cart->delete();
 
         session()->forget($this->sessionKey);
     }
@@ -178,7 +163,7 @@ class CartManager implements CartManagerContract
      */
     protected function findOrCreateCart()
     {
-        return $this->model() ?: $this->createCart();
+        return $this->exists() ? $this->cart : $this->createCart();
     }
 
     /**
