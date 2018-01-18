@@ -22,7 +22,6 @@ class NonexistentCartTest extends TestCase
     public function the_cart_facade_returns_a_nonexistent_cart_by_default()
     {
         $this->assertTrue(Cart::doesNotExist());
-        $this->assertNull(Cart::model());
     }
 
     /**

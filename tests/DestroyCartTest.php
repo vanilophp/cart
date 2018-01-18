@@ -51,19 +51,6 @@ class DestroyCartTest extends TestCase
         $this->assertTrue(Cart::doesNotExist());
     }
 
-    /**
-     * @test
-     */
-    public function cart_does_not_have_a_model_after_destroy()
-    {
-        Cart::addItem($this->product8);
-
-        $this->assertInstanceOf(CartContract::class, Cart::model());
-
-        Cart::destroy();
-        $this->assertNull(Cart::model());
-    }
-
     public function setUp()
     {
         parent::setUp();
