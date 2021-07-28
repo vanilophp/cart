@@ -17,13 +17,18 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Konekt\Enum\Eloquent\CastsEnums;
+use Vanilo\Adjustments\Contracts\Adjustable;
+use Vanilo\Adjustments\Support\HasAdjustmentsViaRelation;
+use Vanilo\Adjustments\Support\RecalculatesAdjustments;
 use Vanilo\Cart\Contracts\Cart as CartContract;
 use Vanilo\Cart\Exceptions\InvalidCartConfigurationException;
 use Vanilo\Contracts\Buyable;
 
-class Cart extends Model implements CartContract
+class Cart extends Model implements CartContract, Adjustable
 {
     use CastsEnums;
+    use HasAdjustmentsViaRelation;
+    use RecalculatesAdjustments;
 
     public const EXTRA_PRODUCT_MERGE_ATTRIBUTES_CONFIG_KEY = 'vanilo.cart.extra_product_attributes';
 
@@ -119,7 +124,7 @@ class Cart extends Model implements CartContract
      */
     public function total(): float
     {
-        return $this->items->sum('total');
+        return $this->itemsTotal() + $this->adjustments()->total();
     }
 
     /**
@@ -152,6 +157,12 @@ class Cart extends Model implements CartContract
         }
 
         $this->user_id = $user;
+    }
+
+
+    public function itemsTotal(): float
+    {
+        return $this->items->sum('total');
     }
 
     public function scopeActives($query)

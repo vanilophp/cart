@@ -18,6 +18,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Konekt\Concord\ConcordServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Vanilo\Cart\Providers\ModuleServiceProvider as CartModule;
+use Vanilo\Adjustments\Providers\ModuleServiceProvider as AdjustmentsModule;
 use Vanilo\Cart\Tests\Dummies\Product;
 use Vanilo\Cart\Tests\Dummies\User;
 
@@ -119,7 +120,8 @@ abstract class TestCase extends Orchestra
         parent::resolveApplicationConfiguration($app);
 
         $app['config']->set('concord.modules', [
-            CartModule::class
+            CartModule::class,
+            AdjustmentsModule::class,
         ]);
 
         $app['config']->set('session.drive', 'array');
