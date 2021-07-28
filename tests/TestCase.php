@@ -17,8 +17,8 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Schema\Blueprint;
 use Konekt\Concord\ConcordServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Vanilo\Cart\Providers\ModuleServiceProvider as CartModule;
 use Vanilo\Adjustments\Providers\ModuleServiceProvider as AdjustmentsModule;
+use Vanilo\Cart\Providers\ModuleServiceProvider as CartModule;
 use Vanilo\Cart\Tests\Dummies\Product;
 use Vanilo\Cart\Tests\Dummies\User;
 

@@ -159,7 +159,6 @@ class Cart extends Model implements CartContract, Adjustable
         $this->user_id = $user;
     }
 
-
     public function itemsTotal(): float
     {
         return $this->items->sum('total');
