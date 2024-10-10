@@ -89,8 +89,10 @@ class Cart extends Model implements CartContract
     public function removeProduct(Buyable $product): void
     {
         $item = $this->items()->ofCart($this)->byProduct($product)->first();
-
-        $this->removeItem($item);
+        
+        if($item){
+            $this->removeItem($item);
+        }
     }
 
     /**
